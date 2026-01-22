@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Unblocked Games</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --bg: #000;
+    --text: #fff;
+    --shadow: rgba(0,0,0,0.85);
+    --font: 'Segoe UI', Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+/* PARTICLES */
+#particles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* HEADER */
+header {
+    position: sticky;
+    top: 0;
+    text-align: center;
+    padding: 60px 20px 25px;
+    background: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.25), transparent);
+    z-index: 3;
+}
+
+#title {
+    font-size: 64px;
+    font-weight: 700;
+    transition: transform .3s ease, font-size .3s ease;
+}
+
+#subtitle {
+    font-size: 14px;
+    opacity: .7;
+}
+
+/* GRID */
+#home {
+    position: relative;
+    z-index: 2;
+    padding: 70px 30px 120px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 210px));
+    justify-content: center;
+    gap: 40px;
+}
+
+/* GAME BUTTON */
+.game {
+    width: 210px;
+    height: 135px;
+    border-radius: 14px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transform: scale(.85);
+    opacity: 0;
+    transition: transform .25s ease, opacity .6s ease;
+}
+
+.game.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.game:hover {
+    transform: scale(1.08);
+}
+
+.game::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,.15));
+}
+
+.game span {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    z-index: 2;
+    text-shadow: 0 4px 12px #000, 0 0 8px #000;
+}
+
+/* PLAYER */
+#player {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.92);
+    backdrop-filter: blur(6px);
+    z-index: 5;
+    display: none;
+    flex-direction: column;
+}
+
+#playerHeader {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+}
+
+#playerHeader h2 {
+    flex: 1;
+    font-size: 18px;
+    margin: 0;
+}
+
+.playerBtn {
+    background: #000;
+    color: #fff;
+    border: 1px solid #333;
+    padding: 7px 14px;
+    cursor: pointer;
+}
+
+iframe {
+    flex: 1;
+    border: none;
+    opacity: 0;
+    transition: opacity .5s ease;
+}
+</style>
+</head>
+
+<body>
+
+<div id="particles"></div>
+
+<header>
+    <div id="title">Unblocked Games</div>
+    <div id="subtitle">Some games might take a bit to load.</div>
+</header>
+
+<div id="home"></div>
+
+<div id="player">
+    <div id="playerHeader">
+        <h2 id="gameTitle"></h2>
+        <button class="playerBtn" onclick="goHome()">Return to Home</button>
+        <button class="playerBtn" onclick="fullscreen()">Fullscreen</button>
+    </div>
+    <iframe id="frame"></iframe>
+</div>
+
+<script>
+/* ===================== GAMES (UNCHANGED FIRST 20) ===================== */
+const games = [
+/* ================= FIRST 20 — UNCHANGED ================= */
+{ title:"Backrooms", url:"games/backrooms/indexBack.html", image:"https://i.ytimg.com/vi/V7pmQacuqaE/maxresdefault.jpg" },
+{ title:"Baldi's Basics", url:"games/baldisbasics/indexBald.html", image:"https://cdn.akamai.steamstatic.com/steam/apps/1712830/ss_3cf1174d24a4518a3e992555ff5bf32e401a1223.1920x1080.jpg?t=1666389083" },
+{ title:"Mr Racer", url:"games/mrracer/indexRacer.html", image:"https://www.contezero.com/user/pages/03.games/09.racing/mr-racer-car-racing/screenshot-2024-03-04.20.08.45.jpg" },
+{ title:"Cluster Rush", url:"games/clusterrush/indexCluster.html", image:"https://www.numuki.com/game/img/cluster-rush-4732.jpg" },
+{ title:"Ovo", url:"games/ovo/indexovo.html", image:"https://www.culinaryschools.org/screenshots/ovo.png" },
+{ title:"Pixel Shooter", url:"games/pixelshooter/indexPixel.html", image:"https://tbg95unblocked.com/wp-content/uploads/2024/10/pixel-shooter.png" },
+{ title:"Poly Track", url:"games/polytrack/indexPoly.html", image:"https://www.speedrun.com/static/game/v1plmy46/cover.png?v=c2796b4" },
+{ title:"Retro Highway", url:"games/retrohighway/indexRetro.html", image:"https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/en_US/games/switch/r/retro-highway-switch/hero" },
+{ title:"Snow Rider 3D", url:"games/snowriders/indexSnow.html", image:"https://api.web.gamepix.com/assets/img/600/340/banner/snow-rider-3d.png" },
+{ title:"Run 3", url:"games/run3/indexRun.html", image:"https://run3.pro/wp-content/uploads/2023/06/Run-3-OG-Image_0.png" },
+
+{ title:"Sandbox City", url:"games/sandboxcity/indexCity.html", image:"https://crazygames1.com/wp-content/uploads/2023/05/sandboxcity.png" },
+{ title:"Slide in the Woods", url:"games/slideinthewoods/indexSlide.html", image:"https://i.ytimg.com/vi/pzK9G3B4wFw/maxresdefault.jpg" },
+{ title:"Sky Riders", url:"games/skyracer/indexSky.html", image:"https://run3ds.com/upload/imgs/sky-riders.jpg" },
+{ title:"Slope 3", url:"games/slope3/indexSlope.html", image:"https://gamecomets.com/thumbs/slope-3-slope-3.jpg" },
+{ title:"Slow Roads", url:"games/slowroads/indexRoads.html", image:"https://static.hahagames.com/media/c6881cf8-8c8e-43fd-b720-95df27a7b145/56cf3e51-3e6f-44dc-a12f-e104a854eddc.jpg" },
+{ title:"Solar Smash", url:"games/solarsmash/indexSolar.html", image:"https://primagames.com/wp-content/uploads/2022/09/How-to-Download-and-Use-Solar-Smash-Mods.jpg?w=1200" },
+{ title:"Subway Surfers", url:"games/subwaysurfers/indexSubway.html", image:"https://www.unblockedgamers.com/wp-content/uploads/2024/01/Screenshot-2024-01-17-145919.jpg" },
+{ title:"Tunnel Rush", url:"games/tunnelrush/indexRush.html", image:"https://tunnelrush.app/wp-content/uploads/2022/12/tunnel-rush.png" },
+{ title:"Granny", url:"games/granny/indexGranny.html", image:"https://wallpapercave.com/wp/wp5530419.jpg" },
+{ title:"Ultimate Car Driving Simulator", url:"games/ultimatecarsim/indexCarsim.html", image:"https://image.winudf.com/v2/image1/Y29tLnNpci5yYWNpbmcudWx0aW1hdGVjYXJkcml2aW5nc2ltdWxhdG9yX3NjcmVlbl8wXzE3MTYzOTc1MjdfMDE3/screen-0.jpg?fakeurl=1&type=.jpg" },
+
+/* ================= NEXT 20 — EXACT DUPLICATES ================= */
+{ title:"Traffic Jam 3D", url:"games/trafficjam3d/indexJam.html", image:"https://www.gamekarma.com/images/screenshots/1365/10.png" },
+{ title:"Unicycle Hero", url:"games/unicyclehero/indexHero.html", image:"https://play-lh.googleusercontent.com/FgYY9boKUO-dEVkmkPcYIhVvTWLjYgce0B_xWDZtwhHm7REPBeD379YYOLXDkVlHuRo=h500" },
+{ title:"Volley Random", url:"games/volleyrandom/indexRandom.html", image:"https://images.sftcdn.net/images/t_app-cover-l,f_auto/p/75c22f11-deaf-4726-a0eb-1ce5c8490f8f/4140613165/volley-random-screenshot.png" },
+{ title:"Vex 3", url:"games/vex3/indexVex3.html", image:"https://th.bing.com/th/id/R.eebe44da8c4a31b156584ce7919617b7?rik=y9aQDf1kW%2fKaLQ&riu=http%3a%2f%2fwww.coolmathgames.com%2fsites%2fdefault%2ffiles%2fVex3_OG-logo.jpg&ehk=OK%2bFzsb1zWUMJyySMGi5aWwEakoR3%2fqbTMPGoRhxIw4%3d&risl=&pid=ImgRaw&r=0" },
+{ title:"Vex 6", url:"games/vex6/indexVex6.html", image:"https://images.crazygames.com/games/vex-6/cover-1634740824058.jpeg?auto=format,compress&q=75&cs=strip&ch=DPR&w=1200&h=630&fit=crop" },
+{ title:"Vex 7", url:"games/vex7/indexVex7.html", image:"https://epiconlinegames.com/wp-content/uploads/2025/10/Vex-7-Play-Online-For-Free.webp" },
+{ title:"Vex 8", url:"games/vex8/indexVex8.html", image:"https://static.giga.de/2a/fe/1a/8cf1f6a34a1a6f33a03a38d7ea_ZmMgODNiYjYzMTRmZmZmIDE2ODAgOTQ0AzJlODFhYTYzMzhl.png" },
+{ title:"Soccer Random", url:"games/soccerrandom/indexSoccer.html", image:"https://gamespec.tech/wp-content/uploads/2024/02/Soccer-Random-Unblocked.png" },
+{ title:"BasketBall Stars", url:"games/basketballstars/indexBasket.html", image:"https://images.crazygames.com/games/basketball-stars-2019/cover-1583231506155.png?auto=format,compress&q=75&cs=strip&ch=DPR&w=1200&h=630&fit=crop" },
+{ title:"Crossy Road", url:"games/crossyroad/indexCrossy.html", image:"https://tse1.mm.bing.net/th/id/OIP.CH4iygoxKIN8LF-dc-B08AHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" },
+
+{ title:"Crazy Cars", url:"games/crazycars/indexCrazy.html", image:"https://miro.medium.com/v2/resize:fit:1200/1*EbRFp1zxysFszmJWc4uS4w.png" },
+{ title:"Crazy Cattle 3D", url:"games/crazycattle3d/indexCattle.html", image:"https://img.youtube.com/vi/49xgU4JrbXk/maxresdefault.jpg" },
+{ title:"Doge Miner", url:"games/dogeminer/indexDoge.html", image:"https://tse2.mm.bing.net/th/id/OIP.o8jyDGuWUDZsb_D3NtDIwgHaEc?w=960&h=576&rs=1&pid=ImgDetMain&o=7&rm=3" },
+{ title:"Drift Boss", url:"games/driftboss/indexDrift.html", image:"https://assets.humoq.com/cdn-cgi/image/quality=78,fit=cover,f=auto,width=3840/images/h512/drift-boss.webp" },
+{ title:"Drive Mad", url:"games/drivemad/indexDrive.html", image:"https://tse3.mm.bing.net/th/id/OIP.SW_QT1k0zakrO5oKXw3NnQHaEK?w=640&h=360&rs=1&pid=ImgDetMain&o=7&rm=3" },
+{ title:"Drift Hunters", url:"games/drifthunters/indexHunters.html", image:"https://image.winudf.com/v2/image1/Y29tLnN0dWRpb251bTQzLmRyaWZ0X2h1bnRlcnNfY2FyX3R1bmluZ19zY3JlZW5fMF8xNjI3ODMyOTE1XzA1NQ/screen-0.jpg?fakeurl=1&type=.jpg" },
+{ title:"Edy's Car Simulator", url:"games/edyscarsim/indexEdyscar.html", image:"https://gamesfrog.com/files/images/wg/edys-car-simulator-2336.jpg" },
+{ title:"Escape Road", url:"games/escaperoad/indexEscape.html", image:"https://snowroad3d.io/data/image/escape-road-game-online.jpg" },
+{ title:"Escape Road 2", url:"games/escaperoad2/indexEscape2.html", image:"https://escaperoad.org/cache/data/image/game/escape-road-2-m320x180.webp" },
+{ title:"Funny Mad Racing", url:"games/funnymadracing/indexMad.html", image:"https://w8.snokido.com/img/large/funny-mad-racing.jpg" }
+];
+
+
+
+/* ===================== BUILD GRID ===================== */
+const home = document.getElementById("home");
+games.forEach((g,i)=>{
+    const d=document.createElement("div");
+    d.className="game";
+    d.style.backgroundImage=`url(${g.image})`;
+    d.innerHTML=`<span>${g.title}</span>`;
+    d.onclick=()=>g.url!="#" && play(g);
+    home.appendChild(d);
+});
+
+/* ===================== PLAYER ===================== */
+function play(g){
+    document.getElementById("player").style.display="flex";
+    document.getElementById("gameTitle").textContent=g.title;
+    const f=document.getElementById("frame");
+    f.src=g.url;
+    f.style.opacity=0;
+    setTimeout(()=>f.style.opacity=1,50);
+}
+function goHome(){
+    document.getElementById("player").style.display="none";
+    document.getElementById("frame").src="";
+}
+function fullscreen(){
+    const f=document.getElementById("frame");
+    if(f.requestFullscreen) f.requestFullscreen();
+}
+
+/* ===================== SCROLL EFFECTS ===================== */
+const title=document.getElementById("title");
+const cards=[...document.querySelectorAll(".game")];
+
+window.addEventListener("scroll",()=>{
+    const y=window.scrollY;
+    title.style.fontSize=Math.max(32,64-y/6)+"px";
+    cards.forEach(c=>{
+        if(c.getBoundingClientRect().top<window.innerHeight-80)
+            c.classList.add("visible");
+    });
+});
+
+/* ===================== PARTICLES ===================== */
+const canvas=document.createElement("canvas");
+particles.appendChild(canvas);
+const ctx=canvas.getContext("2d");
+let w,h;
+function resize(){w=canvas.width=innerWidth;h=canvas.height=innerHeight}
+window.addEventListener("resize",resize);resize();
+
+let parts=[];
+for(let i=0;i<80;i++)spawn();
+
+function spawn(){
+    parts.push({
+        x:Math.random()*w,
+        y:h+Math.random()*200,
+        s:2+Math.random()*2,
+        r:Math.random()*6,
+        a:1,
+        v:20+Math.random()*20
+    });
+}
+
+let last=performance.now();
+function loop(t){
+    const dt=(t-last)/1000; last=t;
+    ctx.clearRect(0,0,w,h);
+    parts.forEach(p=>{
+        p.y-=p.v*dt;
+        p.r+=dt;
+        if(p.y<h*0.2) p.a-=dt*.4;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.r);
+        ctx.globalAlpha=p.a;
+        ctx.fillStyle="#aaa";
+        ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);
+        ctx.restore();
+    });
+    parts=parts.filter(p=>p.a>0);
+    while(parts.length<80) spawn();
+    requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>
